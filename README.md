@@ -47,10 +47,53 @@ To solve this, I refactored the code to use Native JSON Mode and Response Schema
 * **Reliability (503 Errors):** The Gemini 3 models occasionally experience high demand. I addressed this by building an **Exponential Backoff** retry mechanism that automatically pauses and retries requests when the server is busy.
 * **Code Refinement:** While I handled the core logic and architecture, I used AI assistance to troubleshoot specific SDK quirks and to refine the regex/parsing logic before moving to native JSON mode.
 
+
+## Test Cases & Validation
+I have validated the utility against three distinct scenarios to ensure robustness and correct error handling.
+
+Case 1: Empty Input Handling
+To prevent unnecessary API calls and token usage, the system validates the input string locally before sending it to the Gemini model.
+
+Input: "" (Empty String)
+
+Output:
+
+![Empty Prompt Case](assets/Empty_Prompt.png)
+
+The application correctly identifies missing data and returns a clear, actionable error message.
+
+Case 2: Successful Extraction
+This test used a complex paragraph containing project jargon (Solana, IPFS, C++), deadlines, and low-priority "noise" (pizza hackathons).
+
+Input: Messy sync meeting notes.
+
+Output:
+
+![Success Case](assets/Result.png)
+
+
+The model successfully prioritized high-impact technical tasks over social logistics, adhering to the "Exactly 3 items" constraint.
+
+Case 3: Server Resilience (Exponential Backoff)
+During a period of high API demand, the system encountered a 503 Service Unavailable error. The built-in retry logic successfully managed the recovery.
+
+Event: API returns a 503 error.
+
+Log Output:
+
+![Retry Case](assets/Exponential_backoff.png)
+
+The Exponential Backoff logic successfully paused execution and retried the request which subsequently succeeded on the second attempt. This demonstrates the application's stability in unstable production environments.
+
+
 ## Future Improvements
 * **Validation:** Integrating **Zod** for deep validation of the AI's response before it reaches the frontend.
 * **Testing:** Implementing **Jest** to test the retry logic against simulated server failures.
 * **Scaling:** Adding support for streaming responses for much larger blocks of text.
+
+
+
+
 
 
 ## Setup Instructions
