@@ -65,7 +65,7 @@ The application correctly identifies missing data and returns a clear, actionabl
 Case 2: Successful Extraction
 This test used a complex paragraph containing project jargon (Solana, IPFS, C++), deadlines, and low-priority "noise" (pizza hackathons).
 
-Input: Messy sync meeting notes.
+Input: Meeting notes from the DART integration sync: First off, Priyanshu mentioned that the current Solana devnet is sluggish, so we might need to look into scaling options or local validators for testing the image provenance registry. Professor Lou wants a formal draft of the system architecture by Friday, but we are still waiting on the final API specs from the animation team at Stellar Creative Labs. They said they'll send them 'sometime mid-week.' Also, we definitely need to fix the memory leak in the C++ wrapper for the DART model before the demo. On a lighter note, someone suggested we order pizza for the long hackathon session this Saturday, and we should also remember to renew the project's IPFS storage subscription before it expires on the 30th. Let's try to meet again on Monday to see where we are with the Maya plugin..
 
 Output:
 
