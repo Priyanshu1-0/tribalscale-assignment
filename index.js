@@ -1,8 +1,14 @@
 import 'dotenv/config';
 import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 
+// Initialize the Gemini SDK with our private API key
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
+
+/**
+ * This JSON Schema ensures the AI always returns a "summary" string and an "action_items" array,
+ * which prevents our frontend/database from crashing due to unexpected data.
+ */
 const schema = {
   description: "Summary and action item extraction",
   type: SchemaType.OBJECT,
@@ -20,6 +26,13 @@ const schema = {
   required: ["summary", "action_items"],
 };
 
+/**
+  MODEL CONFIGURATION
+ * I used 'gemini-3-flash-preview' for speed.
+ * The 'generationConfig' forces the AI to speak only in JSON,
+ * stripping away conversational filler like "Here is your result."
+ */
+
 const model = genAI.getGenerativeModel({
   model: "gemini-3-flash-preview", 
   generationConfig: {
@@ -29,19 +42,31 @@ const model = genAI.getGenerativeModel({
 });
 
 /**
- * Enhanced analysis function with Exponential Backoff
+ * ANALYZER FUNCTION
+ * I've added a 'maxRetries' parameter to 
+ * make the function resilient to network blips or server overloads.
  */
 async function analyzeText(inputText, maxRetries = 3) {
+
+// Basic validation to avoid wasting API tokens on empty strings
   if (!inputText) return { error: "Input text is required" };
 
   const prompt = `Summarize this text and extract 3 action items: ${inputText}`;
 
+// This loop implements 'Exponential Backoff'
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
+    // Sending the request to Gemini
       const result = await model.generateContent(prompt);
       const response = await result.response;
+      // Because we set the schema above, we can safely parse the response text as JSON
       return JSON.parse(response.text());
     } catch (error) {
+        /**
+       * ERROR HANDLING & RESILIENCE
+       * If we hit a 503 (Server Busy) We wait, then try again. 
+       * If it's a 401 (Wrong API Key), we stop.
+       */
       const isServiceUnavailable = error.message.includes("503") || error.message.includes("overloaded");
       
       if (isServiceUnavailable && attempt < maxRetries) {
