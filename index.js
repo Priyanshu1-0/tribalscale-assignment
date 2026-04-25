@@ -63,7 +63,7 @@ async function analyzeText(inputText, maxRetries = 3) {
 }
 
 // Execution
-const textInput = "I am creating a project called DART Blockchain integration. i need ot created documentation for the architecture of the software, do a meeting with the stakeholders to explain the whole architecture, plan out things for how to integrate it in autodesk maya. after all these things i have to go for a run in the eveneing and have dinner before 11 pm and wake up tomorrow at 6 am";
+const textInput = "Meeting notes from the DART integration sync: First off, Priyanshu mentioned that the current Solana devnet is sluggish, so we might need to look into scaling options or local validators for testing the image provenance registry. Professor Lou wants a formal draft of the system architecture by Friday, but we are still waiting on the final API specs from the animation team at Stellar Creative Labs. They said they'll send them 'sometime mid-week.' Also, we definitely need to fix the memory leak in the C++ wrapper for the DART model before the demo. On a lighter note, someone suggested we order pizza for the long hackathon session this Saturday, and we should also remember to renew the project's IPFS storage subscription before it expires on the 30th. Let's try to meet again on Monday to see where we are with the Maya plugin.";
 
 analyzeText(textInput).then(res => {
   console.log(JSON.stringify(res, null, 2));
